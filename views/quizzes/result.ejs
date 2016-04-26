@@ -8,9 +8,10 @@
   </head>
   <body>
     <h2> Quiz: el juego de las preguntas</h1>
-    <p>La respuesta es <%= result %> </p>
+    
+    <p>La respuesta es <strong> <%= answer %> </strong> es <%= result %></p>
 
-    <p> <a href="question"> Inténtelo otra vez </p>
+    <p> <a href="question?answer=<%= answer %>"> Inténtelo otra vez </p>
 
 
     <footer> Enlace al proyecto en GitHub: <a href="https://github.com/verynrivas/quiz"> QUIZ</a> </footer>
