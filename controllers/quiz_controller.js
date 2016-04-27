@@ -8,6 +8,6 @@ exports.question = function (req, res, next) {
 
 //GET /check
 exports.check = function(req,res, next) {
-	var result = ((req.query.answer === 'Roma') ? 'Correcta' : 'Incorrecta');
+	var result = ((answer === 'Roma') ? 'Correcta' : 'Incorrecta');
 	res.render('quizzes/result', {result: result, answer: answer});
 };
