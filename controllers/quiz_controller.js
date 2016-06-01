@@ -133,6 +133,25 @@ exports.destroy = function(req, res, next) {
     });
 };
 
+// GET /quizzes
+exports.index = function(req, res, next) {
+	if ("search" in req.query){
+		models.Quiz.findAll({order: 'question ASC', 
+							where: {question: {$like: "%" + req.query.search + "%"}}})
+			.then(function(quizzes){
+				res.render('quizzes/index.ejs', { quizzes: quizzes});
+			}).catch(function(error) {
+				next(error);
+		});
+	}else{
+	models.Quiz.findAll().then(function(quizzes) {
+			res.render('quizzes/index.ejs', { quizzes: quizzes});
+		}).catch(function(error) {
+			next(error);
+		});
+	}
+};
+
 //GET /author
 exports.author = function(req, res, next) {
 	res.render('author');
