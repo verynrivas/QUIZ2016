@@ -47,11 +47,22 @@ exports.create = function(req, res, next) {
   var quiz = models.Quiz.build({ question: req.body.quiz.question, 
   	                             answer:   req.body.quiz.answer} );
 
-// guarda en DB los campos pregunta y respuesta de quiz
-  quiz.save({fields: ["question", "answer"]}).then(function(quiz) {
+  // guarda en DB los campos pregunta y respuesta de quiz
+  quiz.save({fields: ["question", "answer"]})
+  	.then(function(quiz) {
 		req.flash('success', 'Quiz creado con éxito.');
     	res.redirect('/quizzes');  // res.redirect: Redirección HTTP a lista de preguntas
-    }).catch(function(error) {
+    })
+    .catch(Sequelize.ValidationError, function(error) {
+
+      req.flash('error', 'Errores en el formulario:');
+      for (var i in error.errors) {
+          req.flash('error', error.errors[i].value);
+      };
+
+      res.render('quizzes/new', {quiz: quiz});
+    })
+    .catch(function(error) {
 		req.flash('error', 'Error al crear un Quiz: '+error.message);
 		next(error);
 	});  
