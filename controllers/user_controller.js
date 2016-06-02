@@ -2,6 +2,7 @@
 var models = require('../models');
 var Sequelize = require('sequelize');
 
+
 // Autoload el user asociado a :userId
 exports.load = function(req, res, next, userId) {
     models.User.findById(userId).then(function(user) {
@@ -45,9 +46,8 @@ exports.create = function(req, res, next) {
                                    password: req.body.user.password
                                 });
 
-    // El login es unico:
-    models.User.find({where: {username: req.body.user.username}})
-        .then(function(existing_user) {
+    // El login debe ser unico:
+    models.User.find({where: {username: req.body.user.username}}).then(function(existing_user) {
             if (existing_user) {
                 var emsg = "El usuario \""+ req.body.user.username +"\" ya existe."
                 req.flash('error', emsg);
@@ -57,9 +57,8 @@ exports.create = function(req, res, next) {
                 return user.save({fields: ["username", "password", "salt"]})
                     .then(function(user) { // Renderizar pagina de usuarios
                         req.flash('success', 'Usuario creado con éxito.');
-                        res.redirect('/session');
-                    })
-                    .catch(Sequelize.ValidationError, function(error) {
+                        res.redirect('/session'); // Redireccion a pagina de login
+                    }).catch(Sequelize.ValidationError, function(error) {
                         req.flash('error', 'Errores en el formulario:');
                         for (var i in error.errors) {
                             req.flash('error', error.errors[i].value);
@@ -82,21 +81,19 @@ exports.edit = function(req, res, next) {
 // PUT /users/:id
 exports.update = function(req, res, next) {
 
-    // req.user.username  = req.body.user.username; 
-     req.user.password  = req.body.user.password;
+    // req.user.username  = req.body.user.username; // No se permite su edicion
+    req.user.password  = req.body.user.password;
 
-    // password no puede estar vacio
+    // El password no puede estar vacio
     if ( ! req.body.user.password) { 
         req.flash('error', "El campo Password debe rellenarse.");
         return res.render('users/edit', {user: req.user});
     }
 
-    req.user.save({fields: ["password", "salt"]})
-        .then(function(user) {
+    req.user.save({fields: ["password", "salt"]}).then(function(user) {
             req.flash('success', 'Usuario actualizado con éxito.');
             res.redirect('/users');  // Redirección HTTP a /
-        })
-        .catch(Sequelize.ValidationError, function(error) {
+        }).catch(Sequelize.ValidationError, function(error) {
 
             req.flash('error', 'Errores en el formulario:');
             for (var i in error.errors) {
