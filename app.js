@@ -56,6 +56,20 @@ app.use(function(req, res, next) {
 
    next();
 });
+app.use(function(req, res, next) {
+  var user = req.session.user;
+  var conexion = new Date();
+  if(!user){
+    next();
+  }else if (conexion.getTime() - user.tiempo > 7200000){
+    delete req.session.user;
+    next();
+  }else{
+    user.tiempo = new Date().getTime();
+    next();
+  }
+});
+//funcion para determinar el tiempo de conexion
 
 app.use('/', routes);
 
