@@ -45,7 +45,7 @@ exports.create = function(req, res, next) {
                                    password: req.body.user.password
                                 });
 
-    // El login debe ser unico:
+    // El login es unico:
     models.User.find({where: {username: req.body.user.username}})
         .then(function(existing_user) {
             if (existing_user) {
@@ -57,7 +57,7 @@ exports.create = function(req, res, next) {
                 return user.save({fields: ["username", "password", "salt"]})
                     .then(function(user) { // Renderizar pagina de usuarios
                         req.flash('success', 'Usuario creado con éxito.');
-                        res.redirect('/users');
+                        res.redirect('/session');
                     })
                     .catch(Sequelize.ValidationError, function(error) {
                         req.flash('error', 'Errores en el formulario:');
@@ -82,10 +82,10 @@ exports.edit = function(req, res, next) {
 // PUT /users/:id
 exports.update = function(req, res, next) {
 
-    // req.user.username  = req.body.user.username; // No se permite su edicion
-    req.user.password  = req.body.user.password;
+    // req.user.username  = req.body.user.username; 
+     req.user.password  = req.body.user.password;
 
-    // El password no puede estar vacio
+    // password no puede estar vacio
     if ( ! req.body.user.password) { 
         req.flash('error', "El campo Password debe rellenarse.");
         return res.render('users/edit', {user: req.user});
@@ -113,8 +113,15 @@ exports.update = function(req, res, next) {
 // DELETE /users/:id
 exports.destroy = function(req, res, next) {
     req.user.destroy().then(function() {
+
+            // Borrando usuario logeado.
+            if (req.session.user && req.session.user.id === req.user.id) {
+                // borra la sesión y redirige a /
+                delete req.session.user;
+            }
+
             req.flash('success', 'Usuario eliminado con éxito.');
-            res.redirect('/users');
+            res.redirect('/');
         }).catch(function(error){ 
             next(error); 
         });

@@ -17,3 +17,5 @@ section { text-align: left; }
 footer { text-align: center; }
 
 nav a {margin: 0px 10px 0px 0px;}
+
+.right {float:right}
