@@ -11,13 +11,14 @@ module.exports = {
 
       return queryInterface.bulkInsert('Users', [ 
          { username: 'admin', 
-           password: encryptPassword('1234', 'aaaa'),
+           password: encryptPassword('r34et5690y', 'aaaa'),
            salt:     'aaaa',
            isAdmin: true,
            createdAt: new Date(), updatedAt: new Date() },
          { username: 'pepe',  
-           password: encryptPassword('5678', 'bbbb'),
+           password: encryptPassword('56gh90op5', 'bbbb'),
            salt:     'bbbb',
+           isAdmin: false,
            createdAt: new Date(), updatedAt: new Date() }
         ]);
   },

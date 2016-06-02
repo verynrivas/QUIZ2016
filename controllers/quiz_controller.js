@@ -195,6 +195,6 @@ exports.index = function(req, res, next) {
 };
 
 //GET /author
-exports.author = function(req, res, next) {
+/*exports.author = function(req, res, next) {
 	res.render('author');
-};
+};*/
