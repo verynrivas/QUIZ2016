@@ -4,7 +4,7 @@ var Sequelize = require('sequelize');
 
 // Autoload el quiz asociado a :quizId
 exports.load = function(req, res, next, quizId) {
-	models.Quiz.findById(quizId)
+	models.Quiz.findById(quizId, {include: [models.Comment]})
   		.then(function(quiz) {
       		if (quiz) {
         		req.quiz = quiz;
@@ -15,6 +15,7 @@ exports.load = function(req, res, next, quizId) {
         })
         .catch(function(error) { next(error); });
 };
+
 
 
 // GET /quizzes
